@@ -3,7 +3,7 @@
 include $(top_srcdir)/flymake.am
 
 AUTOMAKE_OPTIONS = 1.6 foreign
-EXTRA_PROGRAMS = mutt_md5 pgpewrap pgpring
+EXTRA_PROGRAMS = mutt_md5 pgpewrap pgpring mutt_launch
 
 # Test the .tar file by building everything
 AM_DISTCHECK_CONFIGURE_FLAGS = \
@@ -101,6 +101,8 @@ EXTRA_SCRIPTS =
 pgpring_SOURCES = pgppubring.c
 pgpring_LDADD = $(LIBOBJS) $(NCRYPT_LIBS) $(INTLLIBS) $(LIBMUTT)
 pgpring_DEPENDENCIES = $(LIBOBJS) $(NCRYPT_DEPS) $(INTLDEPS) $(LIBMUTTDEPS)
+
+mutt_launch_SOURCES = mutt_launch.c
 
 mutt_md5_SOURCES = md5.c
 mutt_md5_LDADD = $(LIBMUTT)
