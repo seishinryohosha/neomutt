@@ -381,12 +381,10 @@ int mutt_inbox_cmp(const char *a, const char *b);
 
 const char *mutt_strsysexit(int e);
 
-#ifdef DEBUG
 extern char debugfilename[_POSIX_PATH_MAX];
 extern FILE *debugfile;
 extern int debuglevel;
 extern char *debugfile_cmdline;
 extern int debuglevel_cmdline;
-#endif
 
 #endif /* _MUTT_H */

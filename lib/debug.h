@@ -25,10 +25,6 @@
 
 #include <limits.h>
 
-#ifdef DEBUG
 void mutt_debug(int level, const char *fmt, ...);
-#else
-#define mutt_debug(...) do { } while (0)
-#endif
 
 #endif /* _LIB_DEBUG_H */
