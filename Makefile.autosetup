@@ -1,0 +1,199 @@
+###############################################################################
+# substitutions by autosetup
+
+AR=		@AR@
+CC=		@CC@
+CFLAGS=		@CFLAGS@ -I@top_srcdir@ -Wall
+LDFLAGS=	@LDFLAGS@
+LIBS=		@LIBS@
+OPS=		@OPS@
+RANLIB=		@RANLIB@
+SRCDIR=		@srcdir@
+DEPFILES=	$(ALLOBJS:.o=.Po)
+
+###############################################################################
+# mutt
+MUTT=		mutt@EXEEXT@
+MUTTOBJS=	account.o addrbook.o alias.o attach.o bcache.o body.o \
+		browser.o buffy.o charset.o color.o commands.o complete.o \
+		compose.o compress.o conststrings.o copy.o curs_lib.o \
+		curs_main.o edit.o editmsg.o enter.o envelope.o \
+		filter.o flags.o from.o \
+	       	getdomain.o group.o handler.o hdrline.o headers.o help.o \
+		history.o hook.o init.o keymap.o main.o mbox.o mbyte.o menu.o \
+		mh.o muttlib.o mutt_idna.o mutt_sasl_plain.o mutt_socket.o \
+		mutt_tunnel.o mx.o newsrc.o nntp.o pager.o parameter.o \
+	       	parse.o pattern.o pop.o pop_auth.o pop_lib.o postpone.o \
+	       	query.o recvattach.o recvcmd.o rfc1524.o rfc2047.o rfc2231.o \
+		rfc3676.o rfc822.o safe_asprintf.o score.o send.o sendlib.o \
+		sidebar.o signal.o smtp.o sort.o state.o status.o system.o \
+		thread.o url.o version.o
+@if HAVE_RESIZETERM
+MUTTOBJS+=	resize.o
+@endif
+@if USE_SSL_OPENSSL
+MUTTOBJS+=	mutt_ssl.o
+@endif
+@if USE_SSL_GNUTLS
+MUTTOBJS+=	mutt_ssl_gnutls.o
+@endif
+@if USE_NOTMUCH
+MUTTOBJS+=	mutt_notmuch.o
+@endif
+@if MIXMASTER
+MUTTOBJS+=	remailer.o
+@endif
+@if HAVE_SASL
+MUTTOBJS+=	mutt_sasl.o
+@endif
+CLEANFILES+=	$(MUTT) $(MUTTOBJS)
+ALLOBJS+=	$(MUTTOBJS)
+
+###############################################################################
+# libmutt
+LIBMUTT=	libmutt.a
+LIBMUTTOBJS=	lib/base64.o lib/buffer.o lib/date.o lib/debug.o lib/exit.o \
+		lib/file.o lib/hash.o lib/md5.o lib/memory.o lib/message.o \
+		lib/sha1.o lib/string.o
+CLEANFILES+=	$(LIBMUTT) $(LIBMUTTOBJS)
+MUTTLIBS+=	$(LIBMUTT)
+ALLOBJS+=	$(LIBMUTTOBJS)
+
+###############################################################################
+# libncrypt
+LIBNCRYPT=	libncrypt.a
+LIBNCRYPTOBJS=	ncrypt/crypt.o ncrypt/crypt_mod.o ncrypt/cryptglue.o
+@if HAVE_GPGME
+LIBNCRYPTOBJS+=	ncrypt/crypt_gpgme.o ncrypt/crypt_mod_pgp_gpgme.o \
+		ncrypt/crypt_mod_smime_gpgme.o
+@endif
+@if HAVE_PGP
+LIBNCRYPTOBJS+=	ncrypt/crypt_mod_pgp_classic.o ncrypt/gnupgparse.o \
+		ncrypt/pgp.o ncrypt/pgpinvoke.o ncrypt/pgpkey.o \
+		ncrypt/pgplib.o ncrypt/pgpmicalg.o ncrypt/pgppacket.o
+@endif
+@if HAVE_SMIME
+LIBNCRYPTOBJS+=	ncrypt/crypt_mod_smime_classic.o ncrypt/smime.o
+@endif
+CLEANFILES+=	$(LIBNCRYPT) $(LIBNCRYPTOBJS)
+MUTTLIBS+=	$(LIBNCRYPT)
+ALLOBJS+=	$(LIBNCRYPTOBJS)
+
+###############################################################################
+# libimap
+LIBIMAP=	libimap.a
+LIBIMAPOBJS=	imap/auth.o imap/auth_anon.o imap/auth_cram.o \
+		imap/auth_login.o imap/auth_plain.o imap/browse.o \
+	       	imap/command.o imap/imap.o imap/message.o imap/utf7.o \
+	       	imap/util.o
+@if USE_GSS
+LIBIMAPOBJS+=	imap/auth_gss.o
+@endif
+@if HAVE_SASL
+LIBIMAPOBJS+=	imap/auth_sasl.o
+@endif
+CLEANFILES+=	$(LIBIMAP) $(LIBIMAPOBJS)
+MUTTLIBS+=	$(LIBIMAP)
+ALLOBJS+=	$(LIBIMAPOBJS)
+
+###############################################################################
+# libhcache
+LIBHCACHE=	libhcache.a
+@if USE_HCACHE
+LIBHCACHEOBJS=	hcache/hcache.o
+@endif
+@if HAVE_BDB
+LIBHCACHEOBJS+=	hcache/bdb.o
+@endif
+@if HAVE_GDBM
+LIBHCACHEOBJS+=	hcache/gdbm.o
+@endif
+@if HAVE_KC
+LIBHCACHEOBJS+=	hcache/kc.o
+@endif
+@if HAVE_LMDB
+LIBHCACHEOBJS+=	hcache/lmdb.o
+@endif
+@if HAVE_QDBM
+LIBHCACHEOBJS+=	hcache/qdbm.o
+@endif
+@if HAVE_TC
+LIBHCACHEOBJS+=	hcache/tc.o
+@endif
+CLEANFILES+=	$(LIBHCACHE) $(LIBHCACHEOBJS)
+MUTTLIBS+=	$(LIBHCACHE)
+ALLOBJS+=	$(LIBHCACHEOBJS)
+
+###############################################################################
+# generated
+GENERATED=	keymap_defs.h git_ver.h hcache/hcversion.h
+CLEANFILES+=	$(GENERATED)
+
+##############################################################################
+# targets
+all: $(MUTT)
+
+# compile + dependencies
+.c.o:
+	$(CC) $(CFLAGS) -MT $@ -MD -MP -MF $*.Tpo -c -o $@ $<
+	@mv $*.Tpo $*.Po
+
+# mutt
+$(MUTT): $(GENERATED) $(MUTTOBJS) $(MUTTLIBS)
+	$(CC) $(LDFLAGS) -o $@ $(MUTTOBJS) $(MUTTLIBS) $(LIBS)
+
+# libmutt
+$(LIBMUTT): $(LIBMUTTOBJS)
+	$(AR) cr $@ $(LIBMUTTOBJS)
+	$(RANLIB) $@
+
+# libncrypt
+$(LIBNCRYPT): $(LIBNCRYPTOBJS)
+	$(AR) cr $@ $(LIBNCRYPTOBJS)
+	$(RANLIB) $@
+
+# libimap
+$(LIBIMAP): $(LIBIMAPOBJS)
+	$(AR) cr $@ $(LIBIMAPOBJS)
+	$(RANLIB) $@
+
+# libhcache
+$(LIBHCACHE): hcache/hcversion.h $(LIBHCACHEOBJS)
+	$(AR) cr $@ $(LIBHCACHEOBJS)
+	$(RANLIB) $@
+
+# generated
+keymap_defs.h: $(OPS) $(SRCDIR)/gen_defs
+	$(SRCDIR)/gen_defs @OPS@ > $@
+
+git_ver.h: 
+	version=`git describe --dirty --abbrev=6 --match "neomutt-*" 2> /dev/null | sed -e 's/^neomutt-[0-9]\{8\}//' -e 's/g//'`; \
+	echo 'const char *GitVer = "'$$version'";' > git_ver.h.tmp; \
+	cmp -s git_ver.h.tmp git_ver.h || mv git_ver.h.tmp git_ver.h; \
+	rm -f git_ver.h.tmp
+
+hcache/hcversion.h:	$(SRCDIR)/mutt.h $(SRCDIR)/address.h \
+			$(SRCDIR)/list.h $(SRCDIR)/lib/buffer.h \
+			$(SRCDIR)/parameter.h $(SRCDIR)/body.h \
+			$(SRCDIR)/envelope.h $(SRCDIR)/header.h \
+			$(SRCDIR)/hcache/hcachever.sh
+	( echo '#include "config.h"'; echo '#include "mutt.h"'; \
+	echo '#include "address.h"'; echo '#include "list.h"'; \
+	echo '#include "lib/buffer.h"'; echo '#include "parameter.h"'; \
+	echo '#include "body.h"'; echo '#include "envelope.h"'; \
+	echo '#include "header.h"';) | $(CPP) $(CFLAGS) - | \
+	sh $(SRCDIR)/hcache/hcachever.sh $(SRCDIR)/hcache/hcversion.h
+
+# clean
+clean:
+	rm -f $(CLEANFILES)
+
+# distclean
+distclean: clean
+	rm -f $(DEPFILES)
+
+##############################################################################
+# include generated dependency files
+-include $(DEPFILES)
+
+# vim: set ts=8 noexpandtab:
