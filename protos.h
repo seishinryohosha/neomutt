@@ -163,7 +163,6 @@ void mutt_add_to_reference_headers (ENVELOPE *env, ENVELOPE *curenv, LIST ***pp,
 void mutt_adv_mktemp (char *, size_t);
 void mutt_alias_menu (char *, size_t, ALIAS *);
 void mutt_allow_interrupt (int);
-void mutt_attach_init (BODY *);
 void mutt_block_signals (void);
 void mutt_block_signals_system (void);
 int mutt_body_handler (BODY *, STATE *);
@@ -182,7 +181,7 @@ void mutt_decode_base64 (STATE *s, long len, int istext, iconv_t cd);
 void mutt_default_save (char *, size_t, HEADER *);
 void mutt_display_address (ENVELOPE *);
 void mutt_display_sanitize (char *);
-void mutt_edit_content_type (HEADER *, BODY *, FILE *);
+int mutt_edit_content_type (HEADER *, BODY *, FILE *);
 void mutt_edit_file (const char *, const char *);
 void mutt_edit_headers (const char *, const char *, HEADER *, char *, size_t);
 char **mutt_envlist (void);
