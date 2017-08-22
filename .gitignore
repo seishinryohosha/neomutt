@@ -36,8 +36,6 @@ doc/manual.txt
 doc/manual.xml
 doc/Muttrc
 doc/muttrc.man
-doc/genops
-doc/OPS
 po/*.gmo
 po/POTFILES
 po/stamp-po

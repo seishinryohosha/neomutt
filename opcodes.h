@@ -3,10 +3,6 @@
 
 #include "config.h"
 
-#ifdef _MAKEDOC
-#include "doc/makedoc_defs.h"
-#endif
-
 #define OPS_CORE(_fmt) \
   _fmt(OP_NULL,                 N_("null operation")) \
   _fmt(OP_END_COND,             N_("end of conditional execution (noop)")) \
