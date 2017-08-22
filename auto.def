@@ -113,6 +113,9 @@ if {1} {
 # Check for includes that are surrounded by '#ifdef HAVE_FOO_H' in the code
 cc-check-includes ioctl.h sys/ioctl.h sys/syscall.h sysexits.h
 
+# Functions we might need
+cc-check-functions futimens getaddrinfo
+
 # Large file support
 if {[cc-check-lfs]} {
   define OFF_T_FMT {"%" PRId64}
