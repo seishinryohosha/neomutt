@@ -40,7 +40,7 @@
 #include "protos.h"
 
 static const char *HelpStrings[] = {
-#define DEFINE_HELP_MESSAGE(opcode, help_string) [opcode] = N_(help_string),
+#define DEFINE_HELP_MESSAGE(opcode, help_string) [opcode] = help_string,
   OPS(DEFINE_HELP_MESSAGE)
   [OP_MAX] = NULL,
 };

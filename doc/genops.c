@@ -1,5 +1,6 @@
 
 #define _MAKEDOC
+#define N_(String) String
 
 #include "../opcodes.h"
 #include "../mutt.h"
