@@ -40,7 +40,7 @@ bin_SCRIPTS = $(SMIMEAUX_TARGET)
 
 distdir = neo$(PACKAGE)-$(VERSION)
 
-BUILT_SOURCES = conststrings.c git_ver.h keymap_alldefs.h keymap_defs.h
+BUILT_SOURCES = conststrings.c git_ver.h keymap_alldefs.h
 
 bin_PROGRAMS = mutt $(PGPAUX_TARGET)
 
@@ -131,9 +131,6 @@ LDADD = $(LIBOBJS) $(INTLLIBS)
 
 dist-hook:
 	echo $(VERSION) > $(distdir)/.tarball-version
-
-keymap_defs.h: $(OPS) $(srcdir)/gen_defs
-	$(srcdir)/gen_defs $(OPS) > $@
 
 keymap_alldefs.h: $(srcdir)/OPS $(srcdir)/OPS.SIDEBAR $(srcdir)/OPS.NOTMUCH $(srcdir)/OPS.MIX $(srcdir)/OPS.PGP $(srcdir)/OPS.SMIME $(srcdir)/OPS.CRYPT $(srcdir)/gen_defs config.h
 	$(srcdir)/gen_defs $(srcdir)/OPS $(srcdir)/OPS.SIDEBAR $(srcdir)/OPS.NOTMUCH \
