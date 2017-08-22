@@ -20,8 +20,6 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define HELP_C
-
 #include "config.h"
 #include <stddef.h>
 #include <ctype.h>
@@ -40,6 +38,12 @@
 #include "options.h"
 #include "pager.h"
 #include "protos.h"
+
+static const char *HelpStrings[] = {
+#define DEFINE_HELP_MESSAGE(opcode, help_string) [opcode] = N_(help_string),
+  OPS(DEFINE_HELP_MESSAGE)
+  [OP_MAX] = NULL,
+};
 
 static const struct Binding *help_lookup_function(int op, int menu)
 {

@@ -287,12 +287,4 @@ enum mutt_ops {
   OP_MAX,
 };
 
-#ifdef HELP_C
-const char *HelpStrings[] = {
-#define DEFINE_HELP_MESSAGE(opcode, help_string) [opcode] = N_(help_string),
-  OPS(DEFINE_HELP_MESSAGE)
-  [OP_MAX] = NULL,
-};
-#endif
-
 #endif /* _MUTT_OPCODES_H */
