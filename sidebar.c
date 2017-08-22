@@ -975,8 +975,7 @@ void mutt_sb_draw(void)
  * @param op Operation code
  *
  * Change the selected mailbox, e.g. "Next mailbox", "Previous Mailbox
- * with new mail". The operations are listed OPS.SIDEBAR which is built
- * into an enum in opcodes.h.
+ * with new mail". The operations are listed in opcodes.h.
  *
  * If the operation is successful, HilBuffy will be set to the new mailbox.
  * This function only *selects* the mailbox, doesn't *open* it.
