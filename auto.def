@@ -113,8 +113,20 @@ if {1} {
 # Check for includes that are surrounded by '#ifdef HAVE_FOO_H' in the code
 cc-check-includes ioctl.h sys/ioctl.h sys/syscall.h sysexits.h
 
-# Functions we might need
-cc-check-functions futimens getaddrinfo
+# Functions that are checked via '#ifdef HAVE_FUNCTION' in the code
+cc-check-functions \
+  fgetc_unlocked \
+  futimens \
+  getaddrinfo \
+  getsid \
+  iswblank \
+  mkdtemp \
+  strsep \
+  vasprintf
+
+cc-check-function-in-lib gethostent nsl
+cc-check-function-in-lib setsockopt socket
+cc-check-function-in-lib getaddrinfo_a anl
 
 # Large file support
 if {[cc-check-lfs]} {
@@ -162,6 +174,7 @@ if {[opt-bool gpgme]} {
                           gpgme.h gpgme_new gpgme]} {
     user-error "Unable to find GPGME"
   }
+  cc-check-functions gpgme_op_export_keys
   define CRYPT_BACKEND_GPGME
 }
 
@@ -263,6 +276,7 @@ if {1} {
   foreach f {start_color typeahead bkgdset curs_set meta use_default_colors resizeterm} {
     cc-check-function-in-lib $f $ncurses_lib -L$ncurses_prefix/lib
   }
+  cc-check-functions use_extended_names
   if {[have-feature start_color]} {
     define-feature COLOR
   }
